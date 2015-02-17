@@ -50,7 +50,8 @@ class Pipe {
                     $class = $pipe[0];
                     unset($pipe[0]);
                     /** @var Closure $object */
-                    $object = (new ReflectionClass($class))->newInstanceArgs($pipe);
+                    $reflectionClass = new ReflectionClass($class);
+                    $object = $reflectionClass->newInstanceArgs($pipe);
                 } else {
                     /** @var Closure $object */
                     $object = new $pipe();
