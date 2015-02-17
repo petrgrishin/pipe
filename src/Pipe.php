@@ -47,8 +47,7 @@ class Pipe {
                     return call_user_func($pipe, $passable, $stack);
                 }
                 if (is_array($pipe)) {
-                    $class = $pipe[0];
-                    unset($pipe[0]);
+                    $class = array_shift($pipe);
                     /** @var Closure $object */
                     $reflectionClass = new ReflectionClass($class);
                     $object = $reflectionClass->newInstanceArgs($pipe);
