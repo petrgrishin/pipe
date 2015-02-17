@@ -15,7 +15,7 @@ class PipeTest extends PHPUnit_Framework_TestCase {
         };
         $this->assertEquals(0, $i);
         Pipe::create($passable)
-            ->through(['PipeTest__Middleware'])
+            ->through(array('PipeTest__Middleware'))
             ->then(function ($_passable) use ($passable, &$i) {
                 $this->assertEquals(1, $i);
                 $i = $i + 1;
@@ -35,7 +35,7 @@ class PipeTest extends PHPUnit_Framework_TestCase {
         };
         $this->assertEquals(0, $i);
         Pipe::create($passable)
-            ->through([['PipeTest__Middleware', $argValue]])
+            ->through(array(array('PipeTest__Middleware', $argValue)))
             ->then(function ($_passable) use ($passable, &$i) {
                 $this->assertEquals(1, $i);
                 $i = $i + 1;
