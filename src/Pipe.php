@@ -11,7 +11,7 @@ use ReflectionClass;
 
 class Pipe {
 
-    protected $pipes = [];
+    protected $pipes = array();
     protected $passable;
 
     public static function create($passable) {
