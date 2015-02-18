@@ -18,7 +18,7 @@ class PipeTest extends PHPUnit_Framework_TestCase {
         Pipe::create($passable)
             ->through(array('PipeTest__Middleware'))
             ->then(function ($_passable) use ($passable, $that, &$i) {
-                $this->assertEquals(1, $i);
+                $that->assertEquals(1, $i);
                 $i = $i + 1;
                 $that->assertEquals($passable, $_passable);
             });
