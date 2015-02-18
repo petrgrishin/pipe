@@ -9,17 +9,18 @@ class PipeTest extends PHPUnit_Framework_TestCase {
     public function testPipe() {
         $passable = 'test';
         $i = 0;
-        PipeTest__Middleware::$run = function($_passable) use ($passable, &$i) {
+        $that = $this;
+        PipeTest__Middleware::$run = function($_passable) use ($passable, $that, &$i) {
             $i = $i + 1;
-            $this->assertEquals($passable, $_passable);
+            $that->assertEquals($passable, $_passable);
         };
         $this->assertEquals(0, $i);
         Pipe::create($passable)
             ->through(array('PipeTest__Middleware'))
-            ->then(function ($_passable) use ($passable, &$i) {
+            ->then(function ($_passable) use ($passable, $that, &$i) {
                 $this->assertEquals(1, $i);
                 $i = $i + 1;
-                $this->assertEquals($passable, $_passable);
+                $that->assertEquals($passable, $_passable);
             });
         $this->assertEquals(2, $i);
     }
@@ -28,18 +29,19 @@ class PipeTest extends PHPUnit_Framework_TestCase {
         $passable = 'test';
         $i = 0;
         $argValue = 'argValue';
-        PipeTest__Middleware::$run = function($_passable, $arg1) use ($passable, $argValue, &$i) {
+        $that = $this;
+        PipeTest__Middleware::$run = function($_passable, $arg1) use ($passable, $that, $argValue, &$i) {
             $i = $i + 1;
-            $this->assertEquals($passable, $_passable);
-            $this->assertEquals($argValue, $arg1);
+            $that->assertEquals($passable, $_passable);
+            $that->assertEquals($argValue, $arg1);
         };
         $this->assertEquals(0, $i);
         Pipe::create($passable)
             ->through(array(array('PipeTest__Middleware', $argValue)))
-            ->then(function ($_passable) use ($passable, &$i) {
-                $this->assertEquals(1, $i);
+            ->then(function ($_passable) use ($passable, $that, &$i) {
+                $that->assertEquals(1, $i);
                 $i = $i + 1;
-                $this->assertEquals($passable, $_passable);
+                $that->assertEquals($passable, $_passable);
             });
         $this->assertEquals(2, $i);
     }
