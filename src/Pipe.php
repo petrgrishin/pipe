@@ -67,8 +67,9 @@ class Pipe {
      * @return Closure
      */
     protected function getInitialSlice(Closure $destination) {
-        return function () use ($destination) {
-            return call_user_func($destination, $this->passable);
+        $that = $this;
+        return function () use ($destination, $that) {
+            return call_user_func($destination, $that->passable);
         };
     }
 }
