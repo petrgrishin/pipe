@@ -23,7 +23,7 @@ class Pipe {
     }
 
     public function through($pipes) {
-        $this->pipes = is_array($pipes) ? $pipes : func_get_args();
+        $this->pipes = array_merge($this->pipes, (is_array($pipes) ? $pipes : func_get_args()));
         return $this;
     }
 

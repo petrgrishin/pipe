@@ -67,6 +67,26 @@ class PipeTest extends PHPUnit_Framework_TestCase {
             });
         $this->assertEquals(2, $i);
     }
+
+    public function testPipeWithTwoThrough() {
+        $passable = 'test';
+        $i = 0;
+        $that = $this;
+        PipeTest__Middleware::$run = function($_passable) use ($passable, $that, &$i) {
+            $i = $i + 1;
+            $that->assertEquals($passable, $_passable);
+        };
+        $this->assertEquals(0, $i);
+        Pipe::create($passable)
+            ->through(array('PipeTest__Middleware'))
+            ->through(array('PipeTest__Middleware'))
+            ->then(function ($_passable) use ($passable, $that, &$i) {
+                $that->assertEquals(2, $i);
+                $i = $i + 1;
+                $that->assertEquals($passable, $_passable);
+            });
+        $this->assertEquals(3, $i);
+    }
 }
 
 class PipeTest__Middleware {
