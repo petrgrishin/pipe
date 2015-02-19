@@ -12,14 +12,14 @@ use ReflectionClass;
 class Pipe {
 
     protected $pipes = array();
-    protected $passable;
+    protected $passable = array();
 
     public static function create($passable) {
         return new static($passable);
     }
 
-    public function __construct($passable){
-        $this->passable = $passable;
+    public function __construct($passable) {
+        $this->passable = is_array($passable) ? $passable : array($passable);
     }
 
     public function through($pipes) {
@@ -30,7 +30,7 @@ class Pipe {
     public function then(Closure $destination) {
         $firstSlice = $this->getInitialSlice($destination);
         $pipes = array_reverse($this->pipes);
-        return call_user_func(
+        return call_user_func_array(
             array_reduce($pipes, $this->getSlice(), $firstSlice), $this->passable
         );
     }
@@ -42,9 +42,11 @@ class Pipe {
      */
     protected function getSlice() {
         return function ($stack, $pipe) {
-            return function ($passable) use ($stack, $pipe) {
+            return function () use ($stack, $pipe) {
+                $passable = func_get_args();
+                $passable[] = $stack;
                 if ($pipe instanceof Closure) {
-                    return call_user_func($pipe, $passable, $stack);
+                    return call_user_func_array($pipe, $passable);
                 }
                 if (is_array($pipe)) {
                     $class = array_shift($pipe);
@@ -55,7 +57,7 @@ class Pipe {
                     /** @var Closure $object */
                     $object = new $pipe();
                 }
-                return $object($passable, $stack);
+                return call_user_func_array($object, $passable);
             };
         };
     }
@@ -69,7 +71,7 @@ class Pipe {
     protected function getInitialSlice(Closure $destination) {
         $passable = $this->passable;
         return function () use ($destination, $passable) {
-            return call_user_func($destination, $passable);
+            return call_user_func_array($destination, $passable);
         };
     }
 }
