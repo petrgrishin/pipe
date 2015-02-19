@@ -15,11 +15,11 @@ class Pipe {
     protected $passable = array();
 
     public static function create($passable) {
-        return new static($passable);
+        return new static(is_array($passable) ? $passable : func_get_args());
     }
 
     public function __construct($passable) {
-        $this->passable = is_array($passable) ? $passable : array($passable);
+        $this->passable = is_array($passable) ? $passable : func_get_args();
     }
 
     public function through($pipes) {
